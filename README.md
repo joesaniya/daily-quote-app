@@ -60,7 +60,7 @@ lib/
 
 1. **Clone the repository**
 ```bash
-git clone https://github.com/yourusername/daily-quote-app.git
+git clone https://github.com/joesaniya/daily-quote-app.git
 cd daily-quote-app
 ```
 
