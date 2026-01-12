@@ -17,7 +17,9 @@ A beautiful, modern Flutter application that delivers daily inspiration through 
 
 ## 📸 Screenshots
 
-> _Add your app screenshots here_
+D:\tasks-app\sample_app\lib\screens\favorites_page.dart
+
+
 
 ## 🏗️ Architecture
 
@@ -219,7 +221,7 @@ user-friendly error messages
 
 ## 📱 App Demo
 
-> **[Link to Loom Video Demo](#)** _(4-5 minutes)_
+> **[Link to Google drive/Loom Video Demo]i cant upload in loom so i used google drive https://drive.google.com/file/d/189E84kWKk6-i0kvv9gWGeNBXXztrI_Ag/view?usp=drive_link you can access through this link
 
 Demo includes:
 1. ✅ Full app walkthrough on simulator
