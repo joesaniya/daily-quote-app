@@ -236,6 +236,53 @@ user-friendly error messages
 
 ---
 
+## Project Guide 📚
+
+All folder-level documentation has been consolidated into this single Project Guide to make it simpler to find information. If you previously looked for per-folder README files, use this section as the authoritative source.
+
+### Models (lib/models)
+
+- Purpose: Data model classes used across the app (e.g., `Quote`, `UserProfile`, `Collection`).
+- Notes: Models include `fromJson`/`toJson` helpers, equality, and null-safety handling.
+- Example:
+
+```dart
+final q = Quote.fromJson(json);
+print(q.text);
+```
+
+### Services (lib/services)
+
+- Purpose: Business logic, API calls, and platform integrations (e.g., `QuoteService`, `ShareService`, `NotificationService`).
+- Notes: Keep UI concerns out of services; return simple results or throw well-documented errors.
+
+### Providers (lib/providers)
+
+- Purpose: State management using Provider + ChangeNotifier (e.g., `QuoteProvider`, `FavoritesProvider`).
+- Notes: Unit-test provider logic and use widget tests for UI flows.
+
+### Screens (lib/screens)
+
+- Purpose: Page-level UI and navigation (e.g., `HomePage`, `BrowseQuoteScreen`, `QuoteCardGenerator`).
+- Notes: Keep `build` concise and move repeated pieces into smaller widgets.
+
+### Config & Core (lib/config, lib/core)
+
+- Purpose: App configuration helpers (e.g., `SupabaseConfig`) and small utilities (navigation helpers, constants).
+- Notes: Avoid putting feature-specific logic here.
+
+### Platform Notes (android, ios, web)
+
+- Purpose: Platform-specific build notes, permissions, and manual integration steps.
+- Quick tips:
+  - Android: If you see plugin namespace issues prefer upgrading/replacing the plugin; reduce `org.gradle.jvmargs` if the daemon crashes from OOM.
+  - iOS: Add Info.plist keys (e.g., `NSPhotoLibraryAddUsageDescription`) when interacting with Photos.
+  - Web: Some plugins are not supported on web — check compatibility.
+
+If you'd like, I can extract more detailed examples from each folder and add short snippets or a developer quickstart section here.
+
+---
+
 ## New features added
 
 - Collections: create, edit, add/remove quotes (already implemented). ✅
