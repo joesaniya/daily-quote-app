@@ -1,15 +1,20 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:sample_app/core/navigation.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:permission_handler/permission_handler.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class NotificationService {
   static final NotificationService _instance = NotificationService._internal();
   factory NotificationService() => _instance;
   NotificationService._internal();
 
-  final FlutterLocalNotificationsPlugin _notifications = FlutterLocalNotificationsPlugin();
+  final FlutterLocalNotificationsPlugin _notifications =
+      FlutterLocalNotificationsPlugin();
   bool _initialized = false;
 
   Future<void> initialize() async {
@@ -17,7 +22,9 @@ class NotificationService {
 
     tz.initializeTimeZones();
 
-    const androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
+    const androidSettings = AndroidInitializationSettings(
+      '@mipmap/ic_launcher',
+    );
     const iosSettings = DarwinInitializationSettings(
       requestAlertPermission: false,
       requestBadgePermission: false,
@@ -40,7 +47,25 @@ class NotificationService {
 
   void _handleNotificationTap(NotificationResponse response) {
     debugPrint('Notification tapped: ${response.payload}');
-    // TODO: Navigate to specific screen based on payload
+
+    try {
+      final payload = response.payload;
+      if (payload != null) {
+        // Expect payload to be JSON like: {"type":"quote","id":"<quoteId>"}
+        final Map<String, dynamic> data = payload.startsWith('{')
+            ? Map<String, dynamic>.from(jsonDecode(payload))
+            : {};
+        if (data['type'] == 'quote' && data['id'] != null) {
+          final id = data['id'] as String;
+          // Navigate using global navigator key if available
+          if (navigatorKey.currentState != null) {
+            navigatorKey.currentState!.pushNamed('/quote/$id');
+          }
+        }
+      }
+    } catch (e) {
+      debugPrint('Error handling notification tap: $e');
+    }
   }
 
   Future<bool> requestPermissions() async {
@@ -49,7 +74,9 @@ class NotificationService {
       return status.isGranted;
     } else if (defaultTargetPlatform == TargetPlatform.iOS) {
       final result = await _notifications
-          .resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>()
+          .resolvePlatformSpecificImplementation<
+            IOSFlutterLocalNotificationsPlugin
+          >()
           ?.requestPermissions(alert: true, badge: true, sound: true);
       return result ?? false;
     }
@@ -66,7 +93,7 @@ class NotificationService {
 
     final now = DateTime.now();
     var scheduledDate = DateTime(now.year, now.month, now.day, hour, minute);
-    
+
     // If the time has passed today, schedule for tomorrow
     if (scheduledDate.isBefore(now)) {
       scheduledDate = scheduledDate.add(const Duration(days: 1));
@@ -109,7 +136,31 @@ class NotificationService {
       matchDateTimeComponents: DateTimeComponents.time, // Repeat daily
     );
 
-    debugPrint('✅ Daily notification scheduled for ${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}');
+    debugPrint(
+      '✅ Daily notification scheduled for ${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}',
+    );
+  }
+
+  /// Schedule notification for a specific quote using stored preference time
+  Future<void> scheduleNotificationForQuote({
+    required String quoteId,
+    required String quoteText,
+    required String author,
+  }) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final hour = prefs.getInt('notification_hour') ?? 8;
+      final minute = prefs.getInt('notification_minute') ?? 0;
+
+      await scheduleDailyQuoteNotification(
+        hour: hour,
+        minute: minute,
+        quoteText: quoteText,
+        author: author,
+      );
+    } catch (e) {
+      debugPrint('Error scheduling for quote: $e');
+    }
   }
 
   Future<void> showInstantNotification({

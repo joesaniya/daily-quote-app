@@ -19,8 +19,6 @@ A beautiful, modern Flutter application that delivers daily inspiration through 
 
 D:\tasks-app\sample_app\lib\screens\favorites_page.dart
 
-
-
 ## 🏗️ Architecture
 
 The app follows a clean, layered architecture pattern:
@@ -61,17 +59,20 @@ lib/
 ### Installation
 
 1. **Clone the repository**
+
 ```bash
 git clone https://github.com/joesaniya/daily-quote-app.git
 cd daily-quote-app
 ```
 
 2. **Install dependencies**
+
 ```bash
 flutter pub get
 ```
 
 3. **Run the app**
+
 ```bash
 # On connected device/emulator
 flutter run
@@ -104,11 +105,13 @@ dev_dependencies:
 ## 🎨 Design Process
 
 ### Tools Used
+
 - **Figma/Stitch**: UI/UX design and prototyping
 - **Material Design 3**: Design system foundation
 - **Color Palette**: Custom purple-based theme (#6B4EFF)
 
 ### Design Decisions
+
 - **Typography**: Poppins font family for modern, clean readability
 - **Color Scheme**: Purple primary color with automatic dark/light theme support
 - **Spacing**: Consistent 8px grid system
@@ -124,11 +127,13 @@ This project was built leveraging modern AI coding tools to accelerate developme
 ### AI Tools Used
 
 1. **Claude Code** (Primary)
+
    - Architecture planning and code generation
    - Complex logic implementation
    - Refactoring and optimization
 
 2. **GitHub Copilot / Cursor**
+
    - In-editor code completions
    - Quick fixes and suggestions
    - Boilerplate generation
@@ -141,27 +146,31 @@ This project was built leveraging modern AI coding tools to accelerate developme
 ### Development Workflow
 
 #### Phase 1: Planning & Design
+
 ```
-AI Prompt: "Design a Flutter app architecture for a daily quotes app 
-with favorites, sharing, and offline support. Use Provider for state 
+AI Prompt: "Design a Flutter app architecture for a daily quotes app
+with favorites, sharing, and offline support. Use Provider for state
 management and suggest the best project structure."
 ```
 
 #### Phase 2: Model & Service Layer
+
 ```
-AI Prompt: "Create a Quote model class for Flutter that handles JSON 
-from ZenQuotes API. The API returns {q: 'text', a: 'author'}. Include 
+AI Prompt: "Create a Quote model class for Flutter that handles JSON
+from ZenQuotes API. The API returns {q: 'text', a: 'author'}. Include
 null safety, equality operators, and serialization methods."
 ```
 
 #### Phase 3: State Management
+
 ```
-AI Prompt: "Implement a QuoteProvider using ChangeNotifier that fetches 
-quotes from an API service, handles loading states, errors, and includes 
+AI Prompt: "Implement a QuoteProvider using ChangeNotifier that fetches
+quotes from an API service, handles loading states, errors, and includes
 a time-based greeting feature."
 ```
 
 #### Phase 4: UI Implementation
+
 ```
 AI Prompt: "Create a modern Material 3 home screen for a quotes app with:
 - Gradient background
@@ -171,20 +180,23 @@ AI Prompt: "Create a modern Material 3 home screen for a quotes app with:
 ```
 
 #### Phase 5: Local Persistence
+
 ```
-AI Prompt: "Implement a FavoritesManager service using SharedPreferences 
-to store Quote objects. Include methods for add, remove, toggle, and 
+AI Prompt: "Implement a FavoritesManager service using SharedPreferences
+to store Quote objects. Include methods for add, remove, toggle, and
 retrieve all favorites with proper error handling."
 ```
 
 ### Effective Prompting Strategies
 
 #### ✅ Good Prompts
+
 - **Specific**: "Add a dismissible gesture to remove favorites with an undo snackbar"
 - **Context-rich**: "The API sometimes returns null. Update the Quote.fromJson factory to handle missing fields with fallbacks"
 - **Incremental**: "First create the basic UI, then add animations in the next step"
 
 #### ❌ Avoided Prompts
+
 - Too vague: "Make it better"
 - Too broad: "Build the entire app"
 - Without context: "Fix the error" (without sharing the error)
@@ -192,23 +204,26 @@ retrieve all favorites with proper error handling."
 ### AI-Assisted Problem Solving
 
 **Challenge 1: Animation Synchronization**
+
 ```
 Problem: Multiple animations conflicting on favorite toggle
-AI Solution: Suggested using separate AnimationControllers with 
+AI Solution: Suggested using separate AnimationControllers with
 proper disposal and sequential animation chaining
 ```
 
 **Challenge 2: Async State Management**
+
 ```
 Problem: SharedPreferences causing race conditions
-AI Solution: Recommended loading favorites in initState and 
+AI Solution: Recommended loading favorites in initState and
 using FutureBuilder pattern for initial load
 ```
 
 **Challenge 3: API Error Handling**
+
 ```
 Problem: App crashes on network failure
-AI Solution: Implemented try-catch with fallback quotes and 
+AI Solution: Implemented try-catch with fallback quotes and
 user-friendly error messages
 ```
 
@@ -219,24 +234,39 @@ user-friendly error messages
 - **Time Saved**: ~70% faster development
 - **Code Quality**: Improved with AI-suggested best practices
 
+---
+
+## New features added
+
+- Collections: create, edit, add/remove quotes (already implemented). ✅
+- Quote of the Day: Server-side daily generation and display on the Home screen. ✅
+- Local daily notifications: App schedules a daily notification with the Quote of the Day (user-selectable time). ✅
+- Deep links: `app` uses `/quote/<id>` route so notifications and widgets can open the app to a specific quote. ✅
+- Home widget support: `WidgetService` and `home_widget` are added; platform integration (Android AppWidgetProvider / iOS WidgetKit extension) is required to fully enable the widget. 🔧
+
+If you'd like, I can continue and add the Android `AppWidgetProvider` boilerplate and manifest changes, and the iOS WidgetKit extension with App Group setup in the next PR.
+
 ## 📱 App Demo
 
-> **[Link to Google drive/Loom Video Demo]i cant upload in loom so i used google drive https://drive.google.com/file/d/189E84kWKk6-i0kvv9gWGeNBXXztrI_Ag/view?usp=drive_link you can access through this link
+> \*\*[Link to Google drive/Loom Video Demo]i cant upload in loom so i used google drive https://drive.google.com/file/d/189E84kWKk6-i0kvv9gWGeNBXXztrI_Ag/view?usp=drive_link you can access through this link
 
 Demo includes:
+
 1. ✅ Full app walkthrough on simulator
-2. ✅ Design process in Figma/Stitch 
+2. ✅ Design process in Figma/Stitch
 3. ✅ AI workflow examples with real prompts
 4. ✅ Iteration and debugging showcase
 
 ## 🧪 Testing
 
 Run tests with:
+
 ```bash
 flutter test
 ```
 
 Generate coverage report:
+
 ```bash
 flutter test --coverage
 genhtml coverage/lcov.info -o coverage/html
@@ -246,17 +276,20 @@ open coverage/html/index.html
 ## 🚢 Building for Production
 
 ### Android
+
 ```bash
 flutter build apk --release
 flutter build appbundle --release
 ```
 
 ### iOS
+
 ```bash
 flutter build ios --release
 ```
 
 ### Web
+
 ```bash
 flutter build web --release
 ```
@@ -264,17 +297,21 @@ flutter build web --release
 ## 📝 Code Quality
 
 ### Linting
+
 The project uses `flutter_lints` for code analysis:
+
 ```bash
 flutter analyze
 ```
 
 ### Formatting
+
 ```bash
 flutter format .
 ```
 
 ### Best Practices Implemented
+
 - ✅ Const constructors for performance
 - ✅ Proper disposal of controllers
 - ✅ Null safety throughout
@@ -304,11 +341,10 @@ Contributions are welcome! Please follow these steps:
 4. Push to branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-
-
 ## 👤 Author
 
 **Your Name**
+
 - GitHub: https://github.com/joesaniya
 - LinkedIn: https://www.linkedin.com/in/esther-jenslin-463568333/
 - Portfolio: https://esther-jenslin-t2dodau.gamma.site/

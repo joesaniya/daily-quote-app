@@ -5,7 +5,6 @@ import '../providers/favorites_provider.dart';
 import '../providers/settings_provider.dart';
 import '../providers/auth_provider.dart';
 
-
 class SettingsPage extends StatefulWidget {
   const SettingsPage({Key? key}) : super(key: key);
 
@@ -159,11 +158,9 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   void _navigateToProfile() {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => const ProfileScreen(),
-      ),
-    );
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute(builder: (_) => const ProfileScreen()));
   }
 
   @override
@@ -297,7 +294,8 @@ class _SettingsPageState extends State<SettingsPage> {
             iconColor: Colors.blue,
             iconBgColor: Colors.blue.withOpacity(0.1),
             title: 'Profile',
-            subtitle: profile?.displayName ?? user?.email ?? 'View and edit profile',
+            subtitle:
+                profile?.displayName ?? user?.email ?? 'View and edit profile',
             trailing: const Icon(Icons.chevron_right),
             onTap: _navigateToProfile,
           ),
@@ -339,6 +337,36 @@ class _SettingsPageState extends State<SettingsPage> {
                   activeColor: Theme.of(context).colorScheme.primary,
                 ),
                 onTap: provider.notificationsEnabled ? _showTimePicker : null,
+              ),
+              Divider(
+                height: 1,
+                indent: 72,
+                color: Theme.of(context).colorScheme.outlineVariant,
+              ),
+              _buildSettingsTile(
+                icon: Icons.widgets,
+                iconColor: Colors.teal,
+                iconBgColor: Colors.teal.withOpacity(0.1),
+                title: 'Home Widget',
+                subtitle: provider.widgetEnabled ? 'Enabled' : 'Disabled',
+                trailing: Switch(
+                  value: provider.widgetEnabled,
+                  onChanged: (value) => provider.setWidgetEnabled(value),
+                  activeColor: Theme.of(context).colorScheme.primary,
+                ),
+                onTap: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: const Text(
+                        'You can add the widget from your device home screen. Follow platform instructions.',
+                      ),
+                      behavior: SnackBarBehavior.floating,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                  );
+                },
               ),
               Divider(
                 height: 1,
@@ -472,6 +500,32 @@ class _SettingsPageState extends State<SettingsPage> {
             subtitle: 'Version and information',
             trailing: const Icon(Icons.chevron_right),
             onTap: _showAboutDialog,
+          ),
+          Divider(
+            height: 1,
+            indent: 72,
+            color: Theme.of(context).colorScheme.outlineVariant,
+          ),
+          _buildSettingsTile(
+            icon: Icons.notifications_active,
+            iconColor: Colors.green,
+            iconBgColor: Colors.green.withOpacity(0.1),
+            title: 'Test Notification',
+            subtitle: 'Send a test Quote notification',
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () async {
+              await context.read<SettingsProvider>().testNotification();
+              if (!mounted) return;
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: const Text('Test notification sent'),
+                  behavior: SnackBarBehavior.floating,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+              );
+            },
           ),
           Divider(
             height: 1,

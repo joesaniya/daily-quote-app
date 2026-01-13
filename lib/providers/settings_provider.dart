@@ -8,6 +8,7 @@ class SettingsProvider with ChangeNotifier {
   ThemeMode _themeMode = ThemeMode.system;
   String _fontSize = 'medium';
   String _accentColor = 'purple';
+  bool _widgetEnabled = false;
   bool _isLoading = false;
 
   final NotificationService _notificationService = NotificationService();
@@ -17,6 +18,7 @@ class SettingsProvider with ChangeNotifier {
   ThemeMode get themeMode => _themeMode;
   String get fontSize => _fontSize;
   String get accentColor => _accentColor;
+  bool get widgetEnabled => _widgetEnabled;
   bool get isLoading => _isLoading;
 
   static const String _notificationsEnabledKey = 'notifications_enabled';
@@ -25,6 +27,7 @@ class SettingsProvider with ChangeNotifier {
   static const String _themeModeKey = 'theme_mode';
   static const String _fontSizeKey = 'font_size';
   static const String _accentColorKey = 'accent_color';
+  static const String _widgetEnabledKey = 'widget_enabled';
 
   Future<void> loadSettings() async {
     _isLoading = true;
@@ -32,7 +35,7 @@ class SettingsProvider with ChangeNotifier {
 
     try {
       await _notificationService.initialize();
-      
+
       final prefs = await SharedPreferences.getInstance();
 
       _notificationsEnabled = prefs.getBool(_notificationsEnabledKey) ?? false;
@@ -46,6 +49,8 @@ class SettingsProvider with ChangeNotifier {
 
       _fontSize = prefs.getString(_fontSizeKey) ?? 'medium';
       _accentColor = prefs.getString(_accentColorKey) ?? 'purple';
+
+      _widgetEnabled = prefs.getBool(_widgetEnabledKey) ?? false;
     } catch (e) {
       debugPrint('Error loading settings: $e');
     } finally {
@@ -141,6 +146,23 @@ class SettingsProvider with ChangeNotifier {
     }
   }
 
+  Future<void> setWidgetEnabled(bool enabled) async {
+    _widgetEnabled = enabled;
+    notifyListeners();
+
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool(_widgetEnabledKey, enabled);
+
+      if (!enabled) {
+        // Clear widget data
+        // Home widget clearing will be best-effort (platform-specific)
+      }
+    } catch (e) {
+      debugPrint('Error saving widget setting: $e');
+    }
+  }
+
   // Font size helpers
   double getFontScale() {
     switch (_fontSize) {
@@ -173,7 +195,8 @@ class SettingsProvider with ChangeNotifier {
   Future<void> testNotification() async {
     await _notificationService.showInstantNotification(
       title: 'Test Notification 💭',
-      body: '"The only way to do great work is to love what you do." — Steve Jobs',
+      body:
+          '"The only way to do great work is to love what you do." — Steve Jobs',
     );
   }
 }

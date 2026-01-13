@@ -1,8 +1,11 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sample_app/screens/collection_page.dart';
 import 'package:share_plus/share_plus.dart';
 import '../providers/quote_provider.dart';
+import 'quote_detail_screen.dart';
 import '../providers/favorites_provider.dart';
 import '../models/quote.dart';
 import 'browse_quote_screen.dart';
@@ -58,6 +61,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   Future<void> _loadDailyQuote() async {
+    log('Loading daily quote');
     _fadeController.reset();
     await context.read<QuoteProvider>().loadDailyQuote();
     _fadeController.forward();
@@ -69,7 +73,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       body: IndexedStack(
         index: _selectedIndex,
         children: [
-          _HomeView(
+          HomeView(
             fadeAnimation: _fadeAnimation,
             scaleAnimation: _scaleAnimation,
             scaleController: _scaleController,
@@ -134,13 +138,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 }
 
-class _HomeView extends StatelessWidget {
+class HomeView extends StatelessWidget {
   final Animation<double>? fadeAnimation;
   final Animation<double>? scaleAnimation;
   final AnimationController? scaleController;
   final VoidCallback? onLoadQuote;
 
-  const _HomeView({
+  const HomeView({
     this.fadeAnimation,
     this.scaleAnimation,
     this.scaleController,
@@ -325,92 +329,103 @@ class _HomeView extends StatelessWidget {
   }
 
   Widget _buildQuoteCard(BuildContext context, Quote quote) {
-    return Container(
-      padding: const EdgeInsets.all(32),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            QuoteCategory.getColor(quote.category).withOpacity(0.1),
-            QuoteCategory.getColor(quote.category).withOpacity(0.05),
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => QuoteDetailScreen(quoteId: quote.id),
+          ),
+        );
+      },
+      borderRadius: BorderRadius.circular(32),
+      child: Container(
+        padding: const EdgeInsets.all(32),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              QuoteCategory.getColor(quote.category).withOpacity(0.1),
+              QuoteCategory.getColor(quote.category).withOpacity(0.05),
+            ],
+          ),
+          borderRadius: BorderRadius.circular(32),
+          border: Border.all(
+            color: QuoteCategory.getColor(quote.category).withOpacity(0.2),
+            width: 2,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: QuoteCategory.getColor(quote.category).withOpacity(0.1),
+              blurRadius: 30,
+              offset: const Offset(0, 15),
+            ),
           ],
         ),
-        borderRadius: BorderRadius.circular(32),
-        border: Border.all(
-          color: QuoteCategory.getColor(quote.category).withOpacity(0.2),
-          width: 2,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: QuoteCategory.getColor(quote.category).withOpacity(0.1),
-            blurRadius: 30,
-            offset: const Offset(0, 15),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            decoration: BoxDecoration(
-              color: QuoteCategory.getColor(quote.category),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  QuoteCategory.getEmoji(quote.category),
-                  style: const TextStyle(fontSize: 14),
-                ),
-                const SizedBox(width: 6),
-                Text(
-                  quote.category,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 12,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                color: QuoteCategory.getColor(quote.category),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    QuoteCategory.getEmoji(quote.category),
+                    style: const TextStyle(fontSize: 14),
                   ),
-                ),
-              ],
+                  const SizedBox(width: 6),
+                  Text(
+                    quote.category,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-          const SizedBox(height: 24),
-          Icon(
-            Icons.format_quote,
-            size: 40,
-            color: QuoteCategory.getColor(quote.category).withOpacity(0.3),
-          ),
-          const SizedBox(height: 16),
-          Text(
-            quote.text,
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-              fontWeight: FontWeight.w600,
-              height: 1.5,
-              letterSpacing: -0.5,
+            const SizedBox(height: 24),
+            Icon(
+              Icons.format_quote,
+              size: 40,
+              color: QuoteCategory.getColor(quote.category).withOpacity(0.3),
             ),
-          ),
-          const SizedBox(height: 24),
-          Container(
-            width: 60,
-            height: 4,
-            decoration: BoxDecoration(
-              color: QuoteCategory.getColor(quote.category),
-              borderRadius: BorderRadius.circular(2),
+            const SizedBox(height: 16),
+            Text(
+              quote.text,
+              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                fontWeight: FontWeight.w600,
+                height: 1.5,
+                letterSpacing: -0.5,
+              ),
             ),
-          ),
-          const SizedBox(height: 16),
-          Text(
-            '— ${quote.author}',
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
-              fontStyle: FontStyle.italic,
-              fontWeight: FontWeight.w500,
+            const SizedBox(height: 24),
+            Container(
+              width: 60,
+              height: 4,
+              decoration: BoxDecoration(
+                color: QuoteCategory.getColor(quote.category),
+                borderRadius: BorderRadius.circular(2),
+              ),
             ),
-          ),
-        ],
+            const SizedBox(height: 16),
+            Text(
+              '— ${quote.author}',
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                fontStyle: FontStyle.italic,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
