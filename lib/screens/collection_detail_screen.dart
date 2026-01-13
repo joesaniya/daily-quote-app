@@ -4,7 +4,6 @@ import '../services/share_service.dart';
 import '../models/collection.dart';
 import '../models/quote.dart';
 import '../providers/collection_provider.dart';
-import '../providers/favorites_provider.dart';
 
 class CollectionDetailScreen extends StatefulWidget {
   final Collection collection;

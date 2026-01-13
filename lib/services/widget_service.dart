@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
 import 'package:home_widget/home_widget.dart';
-import 'package:sample_app/services/notification_service.dart';
 
 class WidgetService {
   static final WidgetService _instance = WidgetService._internal();
