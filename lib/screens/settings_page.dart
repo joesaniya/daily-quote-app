@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sample_app/screens/profile_screen.dart';
 import '../providers/favorites_provider.dart';
 import '../providers/settings_provider.dart';
+import '../providers/auth_provider.dart';
+
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({Key? key}) : super(key: key);
@@ -76,7 +79,7 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
             ),
             const SizedBox(width: 12),
-            const Text('Daily Quote'),
+            const Text('QuoteVault'),
           ],
         ),
         content: Column(
@@ -103,8 +106,10 @@ class _SettingsPageState extends State<SettingsPage> {
             const SizedBox(height: 8),
             _buildFeatureItem('• Daily inspirational quotes'),
             _buildFeatureItem('• Save your favorites'),
+            _buildFeatureItem('• Create custom collections'),
             _buildFeatureItem('• Share with friends'),
             _buildFeatureItem('• Dark mode support'),
+            _buildFeatureItem('• Cloud sync across devices'),
           ],
         ),
         actions: [
@@ -153,6 +158,14 @@ class _SettingsPageState extends State<SettingsPage> {
     }
   }
 
+  void _navigateToProfile() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => const ProfileScreen(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -177,6 +190,10 @@ class _SettingsPageState extends State<SettingsPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    _buildSubheading('ACCOUNT'),
+                    const SizedBox(height: 12),
+                    _buildAccountSection(),
+                    const SizedBox(height: 24),
                     _buildSubheading('PREFERENCES'),
                     const SizedBox(height: 12),
                     _buildPreferencesSection(),
@@ -218,25 +235,27 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
           ),
           const SizedBox(width: 16),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Settings',
-                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: -0.5,
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Settings',
+                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: -0.5,
+                  ),
                 ),
-              ),
-              Text(
-                'Customize your daily experience',
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Theme.of(
-                    context,
-                  ).colorScheme.onSurface.withOpacity(0.6),
+                Text(
+                  'Customize your daily experience',
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onSurface.withOpacity(0.6),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),
@@ -251,6 +270,39 @@ class _SettingsPageState extends State<SettingsPage> {
         fontWeight: FontWeight.bold,
         letterSpacing: 1.2,
       ),
+    );
+  }
+
+  // ✅ NEW: Account Section with Profile Button
+  Widget _buildAccountSection() {
+    return Consumer<AuthProvider>(
+      builder: (context, authProvider, _) {
+        final user = authProvider.currentUser;
+        final profile = authProvider.userProfile;
+
+        return Container(
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.surface,
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: [
+              BoxShadow(
+                color: Theme.of(context).colorScheme.primary.withOpacity(0.08),
+                blurRadius: 20,
+                offset: const Offset(0, 10),
+              ),
+            ],
+          ),
+          child: _buildSettingsTile(
+            icon: Icons.person,
+            iconColor: Colors.blue,
+            iconBgColor: Colors.blue.withOpacity(0.1),
+            title: 'Profile',
+            subtitle: profile?.displayName ?? user?.email ?? 'View and edit profile',
+            trailing: const Icon(Icons.chevron_right),
+            onTap: _navigateToProfile,
+          ),
+        );
+      },
     );
   }
 
@@ -510,7 +562,7 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget _buildVersionInfo() {
     return Center(
       child: Text(
-        'Daily Quote v1.0.0',
+        'QuoteVault v1.0.0',
         style: Theme.of(context).textTheme.bodySmall?.copyWith(
           color: Theme.of(context).colorScheme.onSurface.withOpacity(0.4),
         ),
