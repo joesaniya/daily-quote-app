@@ -1,17 +1,13 @@
 import 'dart:io';
 import 'dart:ui' as ui;
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:share_plus/share_plus.dart';
 import '../models/quote.dart';
+import '../services/share_service.dart';
 
-enum CardStyle {
-  minimal,
-  gradient,
-  illustrated,
-  modern,
-}
+enum CardStyle { minimal, gradient, illustrated, modern }
 
 class QuoteCardGenerator extends StatefulWidget {
   final Quote quote;
@@ -29,29 +25,63 @@ class _QuoteCardGeneratorState extends State<QuoteCardGenerator> {
 
   Future<void> _shareAsImage() async {
     setState(() => _isGenerating = true);
-
     try {
-      final boundary = _cardKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
-      final image = await boundary.toImage(pixelRatio: 3.0);
-      final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
-      final bytes = byteData!.buffer.asUint8List();
+      final bytes = await _captureCardBytes();
+      if (bytes == null) throw 'Failed to capture image';
 
-      final tempDir = await getTemporaryDirectory();
-      final file = File('${tempDir.path}/quote_card.png');
-      await file.writeAsBytes(bytes);
-
-      await Share.shareXFiles(
-        [XFile(file.path)],
-        text: '"${widget.quote.text}"\n\n— ${widget.quote.author}',
-      );
+      await ShareService.shareImageBytes(bytes, widget.quote);
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error: $e')));
       }
     } finally {
       setState(() => _isGenerating = false);
+    }
+  }
+
+  Future<void> _saveAsImage() async {
+    setState(() => _isGenerating = true);
+    try {
+      final bytes = await _captureCardBytes();
+      if (bytes == null) throw 'Failed to capture image';
+
+      final success = await ShareService.saveImageToGallery(
+        bytes,
+        name: 'quote_${DateTime.now().millisecondsSinceEpoch}',
+      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              success ? 'Saved to gallery' : 'Failed to save image',
+            ),
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error: $e')));
+      }
+    } finally {
+      setState(() => _isGenerating = false);
+    }
+  }
+
+  Future<Uint8List?> _captureCardBytes() async {
+    try {
+      final boundary =
+          _cardKey.currentContext?.findRenderObject() as RenderRepaintBoundary?;
+      if (boundary == null) return null;
+      final image = await boundary.toImage(pixelRatio: 3.0);
+      final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+      return byteData?.buffer.asUint8List();
+    } catch (e) {
+      debugPrint('capture error: $e');
+      return null;
     }
   }
 
@@ -72,12 +102,23 @@ class _QuoteCardGeneratorState extends State<QuoteCardGenerator> {
                 ),
               ),
             )
-          else
+          else ...[
+            IconButton(
+              icon: const Icon(Icons.text_snippet),
+              onPressed: () => ShareService.shareText(widget.quote),
+              tooltip: 'Share as Text',
+            ),
+            IconButton(
+              icon: const Icon(Icons.download),
+              onPressed: _saveAsImage,
+              tooltip: 'Save image to device',
+            ),
             IconButton(
               icon: const Icon(Icons.share),
               onPressed: _shareAsImage,
               tooltip: 'Share as Image',
             ),
+          ],
         ],
       ),
       body: Column(
@@ -86,10 +127,7 @@ class _QuoteCardGeneratorState extends State<QuoteCardGenerator> {
             child: Center(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.all(24),
-                child: RepaintBoundary(
-                  key: _cardKey,
-                  child: _buildCard(),
-                ),
+                child: RepaintBoundary(key: _cardKey, child: _buildCard()),
               ),
             ),
           ),
@@ -130,9 +168,9 @@ class _QuoteCardGeneratorState extends State<QuoteCardGenerator> {
         children: [
           Text(
             'Choose Style',
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 16),
           SingleChildScrollView(
@@ -165,17 +203,23 @@ class _QuoteCardGeneratorState extends State<QuoteCardGenerator> {
                             _getStyleIcon(style),
                             color: isSelected
                                 ? Theme.of(context).colorScheme.primary
-                                : Theme.of(context).colorScheme.onSurfaceVariant,
+                                : Theme.of(
+                                    context,
+                                  ).colorScheme.onSurfaceVariant,
                           ),
                           const SizedBox(height: 8),
                           Text(
                             _getStyleName(style),
                             style: TextStyle(
                               fontSize: 12,
-                              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                              fontWeight: isSelected
+                                  ? FontWeight.bold
+                                  : FontWeight.normal,
                               color: isSelected
                                   ? Theme.of(context).colorScheme.primary
-                                  : Theme.of(context).colorScheme.onSurfaceVariant,
+                                  : Theme.of(
+                                      context,
+                                    ).colorScheme.onSurfaceVariant,
                             ),
                           ),
                         ],
@@ -269,7 +313,7 @@ class _GradientCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = QuoteCategory.getColor(quote.category);
-    
+
     return Container(
       width: 400,
       padding: const EdgeInsets.all(40),

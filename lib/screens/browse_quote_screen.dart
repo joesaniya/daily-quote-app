@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:share_plus/share_plus.dart';
+import '../services/share_service.dart';
 import '../providers/quote_provider.dart';
 import '../providers/favorites_provider.dart';
 import '../providers/collection_provider.dart';
@@ -76,10 +76,8 @@ class _BrowseQuotesPageState extends State<BrowseQuotesPage> {
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
-      builder: (context) => _QuoteOptionsSheet(
-        quote: quote,
-        isFavorite: isFavorite,
-      ),
+      builder: (context) =>
+          _QuoteOptionsSheet(quote: quote, isFavorite: isFavorite),
     );
   }
 
@@ -122,7 +120,9 @@ class _BrowseQuotesPageState extends State<BrowseQuotesPage> {
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
-                    color: Theme.of(context).colorScheme.primary.withOpacity(0.08),
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.primary.withOpacity(0.08),
                     blurRadius: 20,
                     offset: const Offset(0, 4),
                   ),
@@ -144,7 +144,10 @@ class _BrowseQuotesPageState extends State<BrowseQuotesPage> {
                         )
                       : null,
                   border: InputBorder.none,
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 14,
+                  ),
                 ),
               ),
             ),
@@ -158,7 +161,9 @@ class _BrowseQuotesPageState extends State<BrowseQuotesPage> {
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
-                  color: Theme.of(context).colorScheme.primary.withOpacity(0.08),
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.primary.withOpacity(0.08),
                   blurRadius: 20,
                   offset: const Offset(0, 4),
                 ),
@@ -189,7 +194,9 @@ class _BrowseQuotesPageState extends State<BrowseQuotesPage> {
         children: [
           Text(
             'Categories',
-            style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+            style: Theme.of(
+              context,
+            ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 12),
           SingleChildScrollView(
@@ -230,7 +237,10 @@ class _BrowseQuotesPageState extends State<BrowseQuotesPage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               if (category != null) ...[
-                Text(QuoteCategory.getEmoji(category), style: const TextStyle(fontSize: 16)),
+                Text(
+                  QuoteCategory.getEmoji(category),
+                  style: const TextStyle(fontSize: 16),
+                ),
                 const SizedBox(width: 6),
               ],
               Text(
@@ -264,7 +274,8 @@ class _BrowseQuotesPageState extends State<BrowseQuotesPage> {
           child: ListView.builder(
             controller: _scrollController,
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            itemCount: quoteProvider.quotes.length + (quoteProvider.hasMore ? 1 : 0),
+            itemCount:
+                quoteProvider.quotes.length + (quoteProvider.hasMore ? 1 : 0),
             itemBuilder: (context, index) {
               if (index == quoteProvider.quotes.length) {
                 return const Center(
@@ -319,7 +330,10 @@ class _BrowseQuotesPageState extends State<BrowseQuotesPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 5,
+                    ),
                     decoration: BoxDecoration(
                       color: color,
                       borderRadius: BorderRadius.circular(10),
@@ -327,7 +341,10 @@ class _BrowseQuotesPageState extends State<BrowseQuotesPage> {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text(QuoteCategory.getEmoji(quote.category), style: const TextStyle(fontSize: 12)),
+                        Text(
+                          QuoteCategory.getEmoji(quote.category),
+                          style: const TextStyle(fontSize: 12),
+                        ),
                         const SizedBox(width: 4),
                         Text(
                           quote.category,
@@ -355,10 +372,13 @@ class _BrowseQuotesPageState extends State<BrowseQuotesPage> {
                       Expanded(
                         child: Text(
                           '— ${quote.author}',
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
-                            fontStyle: FontStyle.italic,
-                          ),
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.onSurface.withOpacity(0.6),
+                                fontStyle: FontStyle.italic,
+                              ),
                         ),
                       ),
                       if (isFavorite)
@@ -440,7 +460,13 @@ class _QuoteOptionsSheet extends StatelessWidget {
                 context.read<FavoritesProvider>().toggleFavorite(quote);
                 Navigator.pop(context);
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(isFavorite ? 'Removed from favorites' : 'Added to favorites')),
+                  SnackBar(
+                    content: Text(
+                      isFavorite
+                          ? 'Removed from favorites'
+                          : 'Added to favorites',
+                    ),
+                  ),
                 );
               },
             ),
@@ -463,7 +489,9 @@ class _QuoteOptionsSheet extends StatelessWidget {
                 Navigator.pop(context);
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => QuoteCardGenerator(quote: quote)),
+                  MaterialPageRoute(
+                    builder: (_) => QuoteCardGenerator(quote: quote),
+                  ),
                 );
               },
             ),
@@ -474,7 +502,7 @@ class _QuoteOptionsSheet extends StatelessWidget {
               color: Colors.green,
               onTap: () {
                 Navigator.pop(context);
-                Share.share('"${quote.text}"\n\n— ${quote.author}');
+                ShareService.shareText(quote);
               },
             ),
             const SizedBox(height: 24),
@@ -540,14 +568,19 @@ class _AddToCollectionDialog extends StatelessWidget {
                   title: Text(collection.name),
                   subtitle: Text('${collection.quoteCount} quotes'),
                   onTap: () async {
-                    final success = await provider.addQuoteToCollection(collection.id, quote);
+                    final success = await provider.addQuoteToCollection(
+                      collection.id,
+                      quote,
+                    );
                     if (context.mounted) {
                       Navigator.pop(context);
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Text(success
-                              ? 'Added to ${collection.name}'
-                              : 'Failed to add to collection'),
+                          content: Text(
+                            success
+                                ? 'Added to ${collection.name}'
+                                : 'Failed to add to collection',
+                          ),
                         ),
                       );
                     }

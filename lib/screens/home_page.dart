@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sample_app/screens/collection_page.dart';
-import 'package:share_plus/share_plus.dart';
+import '../services/share_service.dart';
 import '../providers/quote_provider.dart';
 import 'quote_detail_screen.dart';
 import '../providers/favorites_provider.dart';
@@ -188,10 +188,8 @@ class HomeView extends StatelessWidget {
     final currentQuote = context.read<QuoteProvider>().dailyQuote;
     if (currentQuote == null) return;
 
-    Share.share(
-      '"${currentQuote.text}"\n\n— ${currentQuote.author}',
-      subject: 'Quote of the Day',
-    );
+    // Centralized share service
+    ShareService.shareText(currentQuote);
   }
 
   @override

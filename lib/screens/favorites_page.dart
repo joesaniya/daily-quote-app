@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:share_plus/share_plus.dart';
+import '../services/share_service.dart';
 import '../providers/favorites_provider.dart';
 import '../models/quote.dart';
 
@@ -40,7 +40,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
   }
 
   void _shareQuote(Quote quote) {
-    Share.share('"${quote.text}"\n\n- ${quote.author}', subject: 'Daily Quote');
+    ShareService.shareText(quote);
   }
 
   @override

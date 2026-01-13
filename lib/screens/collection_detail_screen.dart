@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:share_plus/share_plus.dart';
+import '../services/share_service.dart';
 import '../models/collection.dart';
 import '../models/quote.dart';
 import '../providers/collection_provider.dart';
@@ -9,7 +9,8 @@ import '../providers/favorites_provider.dart';
 class CollectionDetailScreen extends StatefulWidget {
   final Collection collection;
 
-  const CollectionDetailScreen({Key? key, required this.collection}) : super(key: key);
+  const CollectionDetailScreen({Key? key, required this.collection})
+    : super(key: key);
 
   @override
   State<CollectionDetailScreen> createState() => _CollectionDetailScreenState();
@@ -27,7 +28,9 @@ class _CollectionDetailScreenState extends State<CollectionDetailScreen> {
 
   Future<void> _loadQuotes() async {
     setState(() => _isLoading = true);
-    final quotes = await context.read<CollectionsProvider>().loadCollectionQuotes(widget.collection.id);
+    final quotes = await context
+        .read<CollectionsProvider>()
+        .loadCollectionQuotes(widget.collection.id);
     setState(() {
       _quotes = quotes;
       _isLoading = false;
@@ -37,20 +40,23 @@ class _CollectionDetailScreenState extends State<CollectionDetailScreen> {
   Future<void> _editCollection() async {
     final result = await showDialog<Map<String, String>>(
       context: context,
-      builder: (context) => _EditCollectionDialog(collection: widget.collection),
+      builder: (context) =>
+          _EditCollectionDialog(collection: widget.collection),
     );
 
     if (result != null && mounted) {
-      final success = await context.read<CollectionsProvider>().updateCollection(
-        widget.collection.id,
-        name: result['name'],
-        description: result['description'],
-      );
+      final success = await context
+          .read<CollectionsProvider>()
+          .updateCollection(
+            widget.collection.id,
+            name: result['name'],
+            description: result['description'],
+          );
 
       if (success && mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Collection updated')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Collection updated')));
       }
     }
   }
@@ -60,7 +66,9 @@ class _CollectionDetailScreenState extends State<CollectionDetailScreen> {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Delete Collection'),
-        content: Text('Are you sure you want to delete "${widget.collection.name}"?'),
+        content: Text(
+          'Are you sure you want to delete "${widget.collection.name}"?',
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
@@ -76,7 +84,9 @@ class _CollectionDetailScreenState extends State<CollectionDetailScreen> {
     );
 
     if (confirmed == true && mounted) {
-      final success = await context.read<CollectionsProvider>().deleteCollection(widget.collection.id);
+      final success = await context
+          .read<CollectionsProvider>()
+          .deleteCollection(widget.collection.id);
       if (success && mounted) {
         Navigator.pop(context);
       }
@@ -154,10 +164,7 @@ class _CollectionDetailScreenState extends State<CollectionDetailScreen> {
         ),
       ),
       actions: [
-        IconButton(
-          icon: const Icon(Icons.edit),
-          onPressed: _editCollection,
-        ),
+        IconButton(icon: const Icon(Icons.edit), onPressed: _editCollection),
         IconButton(
           icon: const Icon(Icons.delete),
           onPressed: _deleteCollection,
@@ -170,13 +177,10 @@ class _CollectionDetailScreenState extends State<CollectionDetailScreen> {
     return SliverPadding(
       padding: const EdgeInsets.all(16),
       sliver: SliverList(
-        delegate: SliverChildBuilderDelegate(
-          (context, index) {
-            final quote = _quotes![index];
-            return _buildQuoteCard(quote);
-          },
-          childCount: _quotes!.length,
-        ),
+        delegate: SliverChildBuilderDelegate((context, index) {
+          final quote = _quotes![index];
+          return _buildQuoteCard(quote);
+        }, childCount: _quotes!.length),
       ),
     );
   }
@@ -202,7 +206,9 @@ class _CollectionDetailScreenState extends State<CollectionDetailScreen> {
           children: [
             Text(
               quote.text,
-              style: Theme.of(context).textTheme.bodyLarge?.copyWith(height: 1.5),
+              style: Theme.of(
+                context,
+              ).textTheme.bodyLarge?.copyWith(height: 1.5),
             ),
             const SizedBox(height: 12),
             Row(
@@ -211,7 +217,9 @@ class _CollectionDetailScreenState extends State<CollectionDetailScreen> {
                   child: Text(
                     '— ${quote.author}',
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.onSurface.withOpacity(0.6),
                       fontStyle: FontStyle.italic,
                     ),
                   ),
@@ -219,8 +227,12 @@ class _CollectionDetailScreenState extends State<CollectionDetailScreen> {
                 IconButton(
                   icon: const Icon(Icons.remove_circle_outline),
                   onPressed: () async {
-                    final success = await context.read<CollectionsProvider>()
-                        .removeQuoteFromCollection(widget.collection.id, quote.id);
+                    final success = await context
+                        .read<CollectionsProvider>()
+                        .removeQuoteFromCollection(
+                          widget.collection.id,
+                          quote.id,
+                        );
                     if (success) {
                       _loadQuotes();
                       if (mounted) {
@@ -234,7 +246,7 @@ class _CollectionDetailScreenState extends State<CollectionDetailScreen> {
                 IconButton(
                   icon: const Icon(Icons.share),
                   onPressed: () {
-                    Share.share('"${quote.text}"\n\n— ${quote.author}');
+                    ShareService.shareText(quote);
                   },
                 ),
               ],
@@ -256,10 +268,7 @@ class _CollectionDetailScreenState extends State<CollectionDetailScreen> {
             color: Theme.of(context).colorScheme.onSurface.withOpacity(0.3),
           ),
           const SizedBox(height: 16),
-          Text(
-            'No quotes yet',
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
+          Text('No quotes yet', style: Theme.of(context).textTheme.titleLarge),
           const SizedBox(height: 8),
           Text(
             'Add quotes from the browse page',
@@ -291,7 +300,9 @@ class _EditCollectionDialogState extends State<_EditCollectionDialog> {
   void initState() {
     super.initState();
     _nameController = TextEditingController(text: widget.collection.name);
-    _descriptionController = TextEditingController(text: widget.collection.description);
+    _descriptionController = TextEditingController(
+      text: widget.collection.description,
+    );
   }
 
   @override
@@ -318,7 +329,9 @@ class _EditCollectionDialogState extends State<_EditCollectionDialog> {
             const SizedBox(height: 16),
             TextFormField(
               controller: _descriptionController,
-              decoration: const InputDecoration(labelText: 'Description (optional)'),
+              decoration: const InputDecoration(
+                labelText: 'Description (optional)',
+              ),
               maxLines: 3,
             ),
           ],
