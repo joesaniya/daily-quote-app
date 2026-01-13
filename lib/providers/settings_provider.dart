@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../services/notification_service.dart';
 
 class SettingsProvider with ChangeNotifier {
   bool _notificationsEnabled = false;
@@ -8,6 +9,8 @@ class SettingsProvider with ChangeNotifier {
   String _fontSize = 'medium';
   String _accentColor = 'purple';
   bool _isLoading = false;
+
+  final NotificationService _notificationService = NotificationService();
 
   bool get notificationsEnabled => _notificationsEnabled;
   TimeOfDay get notificationTime => _notificationTime;
@@ -28,6 +31,8 @@ class SettingsProvider with ChangeNotifier {
     notifyListeners();
 
     try {
+      await _notificationService.initialize();
+      
       final prefs = await SharedPreferences.getInstance();
 
       _notificationsEnabled = prefs.getBool(_notificationsEnabledKey) ?? false;
@@ -50,6 +55,15 @@ class SettingsProvider with ChangeNotifier {
   }
 
   Future<void> setNotificationsEnabled(bool enabled) async {
+    if (enabled) {
+      // Request permissions first
+      final hasPermission = await _notificationService.requestPermissions();
+      if (!hasPermission) {
+        debugPrint('Notification permissions denied');
+        return;
+      }
+    }
+
     _notificationsEnabled = enabled;
     notifyListeners();
 
@@ -58,9 +72,9 @@ class SettingsProvider with ChangeNotifier {
       await prefs.setBool(_notificationsEnabledKey, enabled);
 
       if (enabled) {
-        _scheduleNotification();
+        await _scheduleNotification();
       } else {
-        _cancelNotification();
+        await _notificationService.cancelAllNotifications();
       }
     } catch (e) {
       debugPrint('Error saving notification setting: $e');
@@ -77,11 +91,18 @@ class SettingsProvider with ChangeNotifier {
       await prefs.setInt(_notificationMinuteKey, time.minute);
 
       if (_notificationsEnabled) {
-        _scheduleNotification();
+        await _scheduleNotification();
       }
     } catch (e) {
       debugPrint('Error saving notification time: $e');
     }
+  }
+
+  Future<void> _scheduleNotification() async {
+    await _notificationService.scheduleDailyQuoteNotification(
+      hour: _notificationTime.hour,
+      minute: _notificationTime.minute,
+    );
   }
 
   Future<void> setThemeMode(ThemeMode mode) async {
@@ -120,18 +141,6 @@ class SettingsProvider with ChangeNotifier {
     }
   }
 
-  void _scheduleNotification() {
-    // TODO: Implement notification scheduling using flutter_local_notifications
-    debugPrint(
-      'Scheduling notification for ${_notificationTime.hour}:${_notificationTime.minute}',
-    );
-  }
-
-  void _cancelNotification() {
-    // TODO: Implement notification cancellation
-    debugPrint('Cancelling notifications');
-  }
-
   // Font size helpers
   double getFontScale() {
     switch (_fontSize) {
@@ -158,5 +167,13 @@ class SettingsProvider with ChangeNotifier {
       default:
         return const Color(0xFF6B4EFF);
     }
+  }
+
+  // Test notification
+  Future<void> testNotification() async {
+    await _notificationService.showInstantNotification(
+      title: 'Test Notification 💭',
+      body: '"The only way to do great work is to love what you do." — Steve Jobs',
+    );
   }
 }
