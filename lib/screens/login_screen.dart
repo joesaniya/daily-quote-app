@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:sample_app/screens/home_page.dart';
 import '../../providers/auth_provider.dart';
 import 'signup_screen.dart';
+import 'forgot_password_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -287,11 +288,13 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget _buildForgotPassword() {
     return TextButton(
       onPressed: () {
-        /* Navigator.of(context).push(
+        Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (_) => const ForgotPasswordScreen(),
+            builder: (_) => ForgotPasswordScreen(
+              initialEmail: _emailController.text.trim(),
+            ),
           ),
-        );*/
+        );
       },
       child: const Text('Forgot Password?'),
     );
