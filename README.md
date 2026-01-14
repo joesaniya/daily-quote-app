@@ -134,6 +134,9 @@ Responsive layouts and polished animations
 🔗 Design Link
 https://stitch.withgoogle.com/projects/5492135111191146132
 
+🔗 APK Link
+https://drive.google.com/file/d/1CxgCZHnAaochvmD1zxZlfp5Tcz01D9YN/view?usp=drive_link
+
 🤖 AI-Assisted Development Workflow
 
 This project was built using modern AI tools to improve development speed, code quality, and architecture decisions.
