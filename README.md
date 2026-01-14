@@ -1,410 +1,248 @@
-# Daily Quote App 📱✨
+📱 QuoteVault — AI-Powered Quote Discovery App
 
-A beautiful, modern Flutter application that delivers daily inspiration through curated quotes. Built with Material Design 3, featuring smooth animations, local favorites management, and seamless sharing capabilities.
+QuoteVault is a full-featured Flutter application for discovering, saving, and sharing inspirational quotes.
+The app is built using Supabase (Auth + Database) and demonstrates clean architecture, cloud sync, personalization, and effective use of AI development tools.
 
-![Flutter](https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white)
-![Dart](https://img.shields.io/badge/Dart-0175C2?style=for-the-badge&logo=dart&logoColor=white)
+This project was developed as part of a Mobile Application Developer Assignment with a strong focus on AI-assisted workflow, feature completeness, and production-quality code.
 
-## ✨ Features
+🧩 Core Features
+Authentication & User Accounts
 
-- **Daily Inspiration**: Fetch random motivational quotes from ZenQuotes API
-- **Favorites Management**: Save and organize your favorite quotes locally
-- **Share Quotes**: Share inspiring quotes with friends via social media
-- **Beautiful UI**: Modern Material Design 3 with custom theming
-- **Smooth Animations**: Polished fade and scale animations for better UX
-- **Dark Mode Support**: Automatic theme switching based on system preferences
-- **Offline Support**: Fallback quotes when network is unavailable
+Email & password sign-up and login
 
-## 📸 Screenshots
+Secure session persistence
 
-D:\tasks-app\sample_app\lib\screens\favorites_page.dart
+Password reset flow
 
-## 🏗️ Architecture
+User profile with name and avatar
 
-The app follows a clean, layered architecture pattern:
+Supabase Auth integration
 
-```
+Quote Browsing & Discovery
+
+Home feed with paginated quotes
+
+Browse by categories:
+
+Motivation
+
+Love
+
+Success
+
+Wisdom
+
+Humor
+
+Search quotes by keyword
+
+Filter quotes by author
+
+Pull-to-refresh support
+
+Graceful loading and empty states
+
+Database seeded with 100+ curated quotes.
+
+Favorites & Collections
+
+Save and remove favorite quotes
+
+Dedicated favorites screen
+
+Create custom quote collections
+
+Add or remove quotes from collections
+
+Cloud sync across devices when logged in
+
+Quote of the Day & Notifications
+
+Daily Quote prominently displayed
+
+Daily rotation logic
+
+Local push notifications
+
+User-selectable notification time
+
+Sharing & Export
+
+Share quotes as plain text
+
+Generate styled quote cards (image format)
+
+Save generated cards to device
+
+Multiple card styles/templates
+
+Personalization & Settings
+
+Dark / Light mode toggle
+
+Accent color themes
+
+Font size adjustment
+
+Settings persist locally and sync to user profile
+
+Home Screen Widget
+
+Daily quote widget logic implemented
+
+Widget deep-links to quote detail screen
+
+Platform-specific widget wiring documented
+
+🏗️ Architecture & Project Structure
+
+The app follows a clean, scalable architecture using Provider for state management.
+
 lib/
-├── models/              # Data models
-│   └── quote.dart
-├── services/            # Business logic & API calls
-│   ├── quote_service.dart
-│   └── favorites_manager.dart
-├── providers/           # State management (Provider pattern)
-│   ├── quote_provider.dart
-│   └── favorites_provider.dart
-├── screens/             # UI screens
-│   ├── home_page.dart
-│   └── favorites_page.dart
-└── main.dart           # App entry point
-```
+├── config/ # Supabase and app configuration
+├── core/ # Navigation & core utilities
+├── models/ # Data models
+├── providers/ # State management (ChangeNotifier)
+├── services/ # API, notifications, sharing, widgets
+├── screens/ # UI screens
+└── main.dart # App entry point
 
-### Tech Stack
+Tech Stack
 
-- **State Management**: Provider
-- **Local Storage**: SharedPreferences
-- **HTTP Client**: http package
-- **Sharing**: share_plus
-- **Design**: Material 3 with custom theming
+Framework: Flutter (Material 3)
 
-## 🚀 Getting Started
+State Management: Provider
 
-### Prerequisites
+Backend: Supabase (Auth + Database)
 
-- Flutter SDK (3.0.0 or higher)
-- Dart SDK (3.0.0 or higher)
-- Android Studio / VS Code with Flutter extensions
-- iOS Simulator / Android Emulator or physical device
+Local Storage: SharedPreferences
 
-### Installation
+Notifications: Local notifications
 
-1. **Clone the repository**
+Sharing: System share sheet
 
-```bash
+Design Tools: Stitch / Figma Make
+
+🎨 Design
+
+UI designed using Stitch (Google)
+
+Consistent Material 3 design language
+
+Responsive layouts and polished animations
+
+🔗 Design Link
+https://stitch.withgoogle.com/projects/5492135111191146132
+
+🤖 AI-Assisted Development Workflow
+
+This project was built using modern AI tools to improve development speed, code quality, and architecture decisions.
+
+AI Tools Used
+
+Claude Code
+
+ChatGPT
+
+GitHub Copilot / Cursor
+
+How AI Was Used
+
+Architecture planning and folder structure
+
+Supabase schema and query generation
+
+Provider state management logic
+
+UI component generation and refactoring
+
+Debugging async and state issues
+
+README and documentation writing
+
+Result
+
+Faster development (~70% time reduction)
+
+Cleaner and more maintainable code
+
+Better separation of concerns
+
+🚀 Getting Started
+Prerequisites
+
+Flutter SDK (3.x or later)
+
+Supabase project with Auth & Database enabled
+
+Setup
 git clone https://github.com/joesaniya/daily-quote-app.git
 cd daily-quote-app
-```
-
-2. **Install dependencies**
-
-```bash
 flutter pub get
-```
 
-3. **Run the app**
+Configure Supabase credentials in:
 
-```bash
-# On connected device/emulator
+lib/config/supa_base_config.dart
+
+Run the app:
+
 flutter run
 
-# For specific platform
-flutter run -d chrome        # Web
-flutter run -d macos         # macOS
-flutter run -d android       # Android
-flutter run -d ios           # iOS
-```
+🎥 Demo Video
 
-### Dependencies
+Loom upload was not accessible, so a Google Drive link is provided.
 
-```yaml
-dependencies:
-  flutter:
-    sdk: flutter
-  cupertino_icons: ^1.0.8
-  provider: ^6.1.1
-  http: ^1.1.0
-  shared_preferences: ^2.2.2
-  share_plus: ^7.2.1
+🔗 App Demo & AI Workflow Video
+https://drive.google.com/file/d/11NPsaMzdt5_y9mVEbUSt333RxmlOInJv/view?usp=drive_link
 
-dev_dependencies:
-  flutter_test:
-    sdk: flutter
-  flutter_lints: ^3.0.0
-```
+The video includes:
 
-## 🎨 Design Process
+Complete app walkthrough
 
-### Tools Used
+Authentication & Supabase demo
 
-- **Figma/Stitch**: UI/UX design and prototyping
-- **Material Design 3**: Design system foundation
-- **Color Palette**: Custom purple-based theme (#6B4EFF)
+Favorites and collections
 
-### Design Decisions
+Quote card generation
 
-- **Typography**: Poppins font family for modern, clean readability
-- **Color Scheme**: Purple primary color with automatic dark/light theme support
-- **Spacing**: Consistent 8px grid system
-- **Cards**: Elevated cards with subtle shadows for depth
-- **Animations**: Subtle fade and scale effects for premium feel
+Notifications
 
-stitch design: https://stitch.withgoogle.com/projects/5492135111191146132
+AI workflow explanation
 
-## 🤖 AI-Assisted Development
+🧪 Quality & Best Practices
 
-This project was built leveraging modern AI coding tools to accelerate development and maintain code quality.
+Null safety throughout
 
-### AI Tools Used
+Error handling with user feedback
 
-1. **Claude Code** (Primary)
+No hardcoded strings
 
-   - Architecture planning and code generation
-   - Complex logic implementation
-   - Refactoring and optimization
+Proper disposal of controllers
 
-2. **GitHub Copilot / Cursor**
+Clean separation of concerns
 
-   - In-editor code completions
-   - Quick fixes and suggestions
-   - Boilerplate generation
+Responsive UI with SafeArea
 
-3. **ChatGPT / Claude**
-   - Problem-solving and debugging
-   - Documentation writing
-   - Code review and improvements
+Consistent naming conventions
 
-### Development Workflow
+⚠️ Known Limitations
 
-#### Phase 1: Planning & Design
+Home screen widget requires final platform-specific setup:
 
-```
-AI Prompt: "Design a Flutter app architecture for a daily quotes app
-with favorites, sharing, and offline support. Use Provider for state
-management and suggest the best project structure."
-```
+Android AppWidgetProvider
 
-#### Phase 2: Model & Service Layer
+iOS WidgetKit extension
 
-```
-AI Prompt: "Create a Quote model class for Flutter that handles JSON
-from ZenQuotes API. The API returns {q: 'text', a: 'author'}. Include
-null safety, equality operators, and serialization methods."
-```
+Web widgets are not supported
 
-#### Phase 3: State Management
+All limitations are documented and non-blocking.
 
-```
-AI Prompt: "Implement a QuoteProvider using ChangeNotifier that fetches
-quotes from an API service, handles loading states, errors, and includes
-a time-based greeting feature."
-```
+👤 Author
 
-#### Phase 4: UI Implementation
+Esther Jenslin
 
-```
-AI Prompt: "Create a modern Material 3 home screen for a quotes app with:
-- Gradient background
-- Animated quote card with fade-in effect
-- Action buttons for favorite, share, and refresh
-- Bottom navigation bar"
-```
+GitHub: https://github.com/joesaniya
 
-#### Phase 5: Local Persistence
+LinkedIn: https://www.linkedin.com/in/esther-jenslin-463568333/
 
-```
-AI Prompt: "Implement a FavoritesManager service using SharedPreferences
-to store Quote objects. Include methods for add, remove, toggle, and
-retrieve all favorites with proper error handling."
-```
-
-### Effective Prompting Strategies
-
-#### ✅ Good Prompts
-
-- **Specific**: "Add a dismissible gesture to remove favorites with an undo snackbar"
-- **Context-rich**: "The API sometimes returns null. Update the Quote.fromJson factory to handle missing fields with fallbacks"
-- **Incremental**: "First create the basic UI, then add animations in the next step"
-
-#### ❌ Avoided Prompts
-
-- Too vague: "Make it better"
-- Too broad: "Build the entire app"
-- Without context: "Fix the error" (without sharing the error)
-
-### AI-Assisted Problem Solving
-
-**Challenge 1: Animation Synchronization**
-
-```
-Problem: Multiple animations conflicting on favorite toggle
-AI Solution: Suggested using separate AnimationControllers with
-proper disposal and sequential animation chaining
-```
-
-**Challenge 2: Async State Management**
-
-```
-Problem: SharedPreferences causing race conditions
-AI Solution: Recommended loading favorites in initState and
-using FutureBuilder pattern for initial load
-```
-
-**Challenge 3: API Error Handling**
-
-```
-Problem: App crashes on network failure
-AI Solution: Implemented try-catch with fallback quotes and
-user-friendly error messages
-```
-
-### Time Savings
-
-- **Manual Coding Estimate**: 12-15 hours
-- **AI-Assisted Actual Time**: 4-5 hours
-- **Time Saved**: ~70% faster development
-- **Code Quality**: Improved with AI-suggested best practices
-
----
-
-## Project Guide 📚
-
-All folder-level documentation has been consolidated into this single Project Guide to make it simpler to find information. If you previously looked for per-folder README files, use this section as the authoritative source.
-
-### Models (lib/models)
-
-- Purpose: Data model classes used across the app (e.g., `Quote`, `UserProfile`, `Collection`).
-- Notes: Models include `fromJson`/`toJson` helpers, equality, and null-safety handling.
-- Example:
-
-```dart
-final q = Quote.fromJson(json);
-print(q.text);
-```
-
-### Services (lib/services)
-
-- Purpose: Business logic, API calls, and platform integrations (e.g., `QuoteService`, `ShareService`, `NotificationService`).
-- Notes: Keep UI concerns out of services; return simple results or throw well-documented errors.
-
-### Providers (lib/providers)
-
-- Purpose: State management using Provider + ChangeNotifier (e.g., `QuoteProvider`, `FavoritesProvider`).
-- Notes: Unit-test provider logic and use widget tests for UI flows.
-
-### Screens (lib/screens)
-
-- Purpose: Page-level UI and navigation (e.g., `HomePage`, `BrowseQuoteScreen`, `QuoteCardGenerator`).
-- Notes: Keep `build` concise and move repeated pieces into smaller widgets.
-
-### Config & Core (lib/config, lib/core)
-
-- Purpose: App configuration helpers (e.g., `SupabaseConfig`) and small utilities (navigation helpers, constants).
-- Notes: Avoid putting feature-specific logic here.
-
-### Platform Notes (android, ios, web)
-
-- Purpose: Platform-specific build notes, permissions, and manual integration steps.
-- Quick tips:
-  - Android: If you see plugin namespace issues prefer upgrading/replacing the plugin; reduce `org.gradle.jvmargs` if the daemon crashes from OOM.
-  - iOS: Add Info.plist keys (e.g., `NSPhotoLibraryAddUsageDescription`) when interacting with Photos.
-  - Web: Some plugins are not supported on web — check compatibility.
-
-If you'd like, I can extract more detailed examples from each folder and add short snippets or a developer quickstart section here.
-
----
-
-## New features added
-
-- Collections: create, edit, add/remove quotes (already implemented). ✅
-- Quote of the Day: Server-side daily generation and display on the Home screen. ✅
-- Local daily notifications: App schedules a daily notification with the Quote of the Day (user-selectable time). ✅
-- Deep links: `app` uses `/quote/<id>` route so notifications and widgets can open the app to a specific quote. ✅
-- Home widget support: `WidgetService` and `home_widget` are added; platform integration (Android AppWidgetProvider / iOS WidgetKit extension) is required to fully enable the widget. 🔧
-
-If you'd like, I can continue and add the Android `AppWidgetProvider` boilerplate and manifest changes, and the iOS WidgetKit extension with App Group setup in the next PR.
-
-## 📱 App Demo
-
-> \*\*[Link to Google drive/Loom Video Demo]i cant upload in loom so i used google drive https://drive.google.com/file/d/189E84kWKk6-i0kvv9gWGeNBXXztrI_Ag/view?usp=drive_link you can access through this link
-
-Demo includes:
-
-1. ✅ Full app walkthrough on simulator
-2. ✅ Design process in Figma/Stitch
-3. ✅ AI workflow examples with real prompts
-4. ✅ Iteration and debugging showcase
-
-## 🧪 Testing
-
-Run tests with:
-
-```bash
-flutter test
-```
-
-Generate coverage report:
-
-```bash
-flutter test --coverage
-genhtml coverage/lcov.info -o coverage/html
-open coverage/html/index.html
-```
-
-## 🚢 Building for Production
-
-### Android
-
-```bash
-flutter build apk --release
-flutter build appbundle --release
-```
-
-### iOS
-
-```bash
-flutter build ios --release
-```
-
-### Web
-
-```bash
-flutter build web --release
-```
-
-## 📝 Code Quality
-
-### Linting
-
-The project uses `flutter_lints` for code analysis:
-
-```bash
-flutter analyze
-```
-
-### Formatting
-
-```bash
-flutter format .
-```
-
-### Best Practices Implemented
-
-- ✅ Const constructors for performance
-- ✅ Proper disposal of controllers
-- ✅ Null safety throughout
-- ✅ Error handling with user feedback
-- ✅ Separation of concerns (models, services, providers, UI)
-- ✅ Responsive design with SafeArea
-- ✅ Accessibility considerations
-
-## 🔮 Future Enhancements
-
-- [ ] Search functionality in favorites
-- [ ] Categories/tags for quotes
-- [ ] Custom quote creation
-- [ ] Cloud sync across devices
-- [ ] Widget for home screen
-- [ ] Notification reminders
-- [ ] Multiple language support
-- [ ] Quote of the day history
-
-## 🤝 Contributing
-
-Contributions are welcome! Please follow these steps:
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-## 👤 Author
-
-**Your Name**
-
-- GitHub: https://github.com/joesaniya
-- LinkedIn: https://www.linkedin.com/in/esther-jenslin-463568333/
-- Portfolio: https://esther-jenslin-t2dodau.gamma.site/
-
-## 🙏 Acknowledgments
-
-- [ZenQuotes API](https://zenquotes.io/) for providing free quotes
-- Flutter team for the amazing framework
-- AI tools (Claude, Copilot) for accelerating development
-- Material Design team for design guidelines
-
-## 📞 Support
-
-For support, email estherjenslin1999@example.com or create an issue in the repository.
-
----
+Portfolio: https://esther-jenslin-t2dodau.gamma.site/
